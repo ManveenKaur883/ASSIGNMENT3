@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cupcake" class="bg-gray-200">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/main.css">
+  <title>Set <%= legoSet.num_id %> - Lego Collection</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch('https://quotable.io/random')
+        .then(response => response.json())
+        .then(data => {
+          const quoteElement = document.getElementById('quote');
+          quoteElement.innerHTML = `<p>${data.content}</p><strong>- ${data.author}</strong><br>`;
+        })
+        .catch(error => {
+          console.error('Error fetching quote:', error);
+        });
+    });
+</script>
+</head>
+<body>
+    <%- include('partials/navbar', {page: '/set/'+ legoSet.num_id}) %>
+
+    <div class="container mx-auto flex items-center justify-center flex-col relative">
+        <div class="hero-content text-center ">
+            <div class="max-w-md">
+              <h1 class="text-5xl font-bold"><%= legoSet.name %></h1>
+    
+              <p class="py-6">More information about the set <%= legoSet.name %> </p>
+    
+            </div>
+          </div>
+
+        <div class="w-3/5 grid grid-cols-1 md:grid-cols-2 gap-6 bg-zinc-100 shadow-xl rounded-lg p-5">
+            <img class="w-fit h-auto rounded-lg justify-self-center"src="<%= legoSet.img_url %>" alt="<%= legoSet.name %>"/>
+            <div class="prose">
+              <h2><%= legoSet.name %></h2>
+              <p>Set Number: <%= legoSet.set_num %></p>
+              <p>Theme: <%= legoSet.theme %></a></p>
+              <p>Year: <%= legoSet.year %></p>
+              <p>Number of Parts: <%= legoSet.num_parts %></p>
+              <div class="quote" id="quote"></div>
+              <div class="flex justify-end items-end mt-3">
+                <a href="#" onclick="history.back(); return false;" class="btn btn-secondary">Back</a>
+              </div>
+           </div>          
+
+          </div>
+      </div>
+</body>
+</html>

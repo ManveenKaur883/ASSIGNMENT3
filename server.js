@@ -19,61 +19,78 @@
 
 *
 
-* Published URL: ___________________________________________________________
+* Published URL: ___https://fancy-top-coat-calf.cyclic.app______________________________________________________
 
 *
 
 ********************************************************************************/
 
 const legoData = require("./modules/legoSets");
+const availableThemes = ["RoboRiders", "Town", "Paradise"];
+legoData.initialize();
 const path = require('path');
 const express = require('express');
 
 const app = express();
+app.use(express.static('public'));
+app.set("view engine", "ejs");
 const port = process.env.PORT||3000; 
 
-// Initialize the Lego data module
 legoData.initialize().then(() => {
     app.listen(port, () => {
         console.log(`Server running on port http://localhost:${port}`);
     });
-}).catch((err) => {
-    console.error("Failed to initialize lego data:", err);
-});
+  }).catch((err) => {
+    console.log(err);
+  });;
 
-// Define the root route of the web server
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/home.html'));
-});
 
-app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views/about.html'));
-});
-// Define a route to get all Lego sets
-app.get("/lego/sets", async (req, res) => {
-    try {
-        const set = await legoData.getAllSets();
-        res.json(set);
-} catch (error) {
-        res.status(500).send(error.message);
+  app.get('/', (req, res) => {
+    res.render("home", { page: '/' });
+  });
+  
+  app.get('/about', (req, res) => {
+    res.render("about", { page: '/about' });
+  });
+  
+  app.get('/lego/sets', (req, res) => {
+    console.log(req.query);
+    if (req.query.theme){
+      legoData.getSetsByTheme(req.query.theme)
+      .then(themeSets => {
+        res.render('sets', {legoSets: themeSets, currentTheme: req.query.theme, availableThemes: availableThemes});
+      })
+      .catch(error => {
+          console.error(error);
+          res.status(404).render('404', {message: "No sets found for the specified theme."});
+      });
     }
-});
-
-// Define a route to get a specific Lego set by number
-// Route to get a Lego set by its number
-app.get("/lego/sets/:set_num", async (req, res) => {
+    else {
+      legoData.getAllSets()
+      .then(sets => {
+          res.render('sets', {legoSets: sets, currentTheme: "", availableThemes: availableThemes});
+      })
+      .catch(error => {
+          console.error(error);
+          res.status(404).render('404', {message: "I'm sorry, we're unable to find what you're looking for."});
+      });
+    }
+  });
+  
+  app.get('/lego/sets/:set_num', (req, res) => {
     const setNum = req.params.set_num;
-    try {
-        const set = await legoData.getSetByNum(setNum);
+  
+    legoData.getSetByNum(setNum)
+      .then((set) => {
         if (!set) {
-            return res.status(404).send({ message: "Lego set not found" });
+          res.status(404).render("404", { message: "No set found for the specified set number." });
+        } else {
+          res.render('set', { legoSet: set });
         }
-        res.json(set);
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '/views/404.html'));
-});
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(404).render("404", { message: "I'm sorry, we're unable to find what you're looking for." });
+      });
+  });
+  
