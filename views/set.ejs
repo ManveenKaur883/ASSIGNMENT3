@@ -1,52 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="cupcake" class="bg-gray-200">
+<html data-theme="dark" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/main.css">
-  <title>Set <%= legoSet.num_id %> - Lego Collection</title>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch('https://quotable.io/random')
-        .then(response => response.json())
-        .then(data => {
-          const quoteElement = document.getElementById('quote');
-          quoteElement.innerHTML = `<p>${data.content}</p><strong>- ${data.author}</strong><br>`;
-        })
-        .catch(error => {
-          console.error('Error fetching quote:', error);
-        });
-    });
-</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= set.name %> - Lego Set Details</title>
+  <link rel="stylesheet" href="/css/main.css" />
 </head>
+
 <body>
-    <%- include('partials/navbar', {page: '/set/'+ legoSet.num_id}) %>
+  <%- include('partials/navbar', { page: '', activeTheme: set.theme }) %>
 
-    <div class="container mx-auto flex items-center justify-center flex-col relative">
-        <div class="hero-content text-center ">
-            <div class="max-w-md">
-              <h1 class="text-5xl font-bold"><%= legoSet.name %></h1>
-    
-              <p class="py-6">More information about the set <%= legoSet.name %> </p>
-    
-            </div>
+  <div class="container mx-auto mt-10">
+    <div class="hero bg-base-100 rounded-lg p-0">
+      <div class="hero-content text-center">
+        <div class="max-w-md">
+          <div class="bg-base-200 p-6">
+            <h1 class="text-5xl font-bold" id="setName"><%= set.name %></h1>
+            <p>Below, you will find detailed information about the set: "<%= set.name %>"</p>
+            <img src="<%= set.img_url %>" alt="Lego Set Image" style="width: 300px; height: auto;">
+
+            <p><strong>Year:</strong> <span><%= set.year %></span></p>
+            <p><strong>Theme:</strong> <span><%= set.theme %></span></p>
+            <p><strong>Number of Parts:</strong> <span><%= set.num_parts %></span></p>
+
+            <a href="/lego/editSet/<%= set.set_num %>" class="btn btn-success">Edit</a>
+            <a href="/lego/deleteSet/<%= set.set_num %>" class="btn btn-error">Delete Set</a>
+            <a href="#" onclick="history.back(); return false;" class="btn">Back</a>
           </div>
-
-        <div class="w-3/5 grid grid-cols-1 md:grid-cols-2 gap-6 bg-zinc-100 shadow-xl rounded-lg p-5">
-            <img class="w-fit h-auto rounded-lg justify-self-center"src="<%= legoSet.img_url %>" alt="<%= legoSet.name %>"/>
-            <div class="prose">
-              <h2><%= legoSet.name %></h2>
-              <p>Set Number: <%= legoSet.set_num %></p>
-              <p>Theme: <%= legoSet.theme %></a></p>
-              <p>Year: <%= legoSet.year %></p>
-              <p>Number of Parts: <%= legoSet.num_parts %></p>
-              <div class="quote" id="quote"></div>
-              <div class="flex justify-end items-end mt-3">
-                <a href="#" onclick="history.back(); return false;" class="btn btn-secondary">Back</a>
-              </div>
-           </div>          
-
-          </div>
+        </div>
       </div>
+    </div>
+  </div>
+
 </body>
 </html>

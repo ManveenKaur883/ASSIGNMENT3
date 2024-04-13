@@ -1,11 +1,21 @@
-<div class="navbar bg-base-100">
-    <div class="flex-1">
-      <a href="/" class="btn btn-ghost normal-case text-xl">Lego Collection</a>
-    </div>
-    <div class="navbar-center flex">
-      <ul class="menu menu-horizontal px-1">
-        <li><a href="/lego/sets" class="<%= (page == "/lego/sets") ? 'active' : '' %>">View Collection</a></li>
-        <li><a href="/about" class="<%= (page == "/about") ? 'active' : '' %>">About</a></li>
-      </ul>
-    </div>
+<nav class="navbar bg-base-100">
+  <div class="navbar-start">
+    <a href="/" class="btn btn-ghost normal-case text-xl <%= page === '/' ? 'active' : '' %>">Lego Set Collections</a>
   </div>
+  <div class="navbar-end">
+    <ul class="menu menu-horizontal p-0">
+      <li><a class="<%= page === '/about' ? 'active' : '' %>" href="/about">About</a></li>
+      <li><a class="<%= page === '/lego/addSet' ? 'active' : '' %>" href="/lego/addSet">Add to Collection</a></li>
+      <li>
+        <details>
+          <summary>Select Theme</summary>
+          <ul class="menu bg-base-100">
+            <li><a class="<%= page === '/lego/sets' && activeTheme === 'RoboRiders' ? 'active' : '' %>" href="/lego/sets?theme=RoboRiders">RoboRiders</a></li>
+            <li><a class="<%= page === '/lego/sets' && activeTheme === 'Town' ? 'active' : '' %>" href="/lego/sets?theme=Town">Town</a></li>
+            <li><a class="<%= page === '/lego/sets' && activeTheme === 'Paradise' ? 'active' : '' %>" href="/lego/sets?theme=Paradise">Paradise</a></li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+</nav>
